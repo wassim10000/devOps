@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user
+          image: wassimabderrazak/user-service:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: JWT_SECRET
+              value: devopssecretkey
+            - name: PG_USER
+              value: devops
+            - name: PG_PASSWORD
+              value: devops
+            - name: PG_DB
+              value: userdb
+            - name: PG_HOST
+              value: postgres-service
+            - name: PG_PORT
+              value: "5433"

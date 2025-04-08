@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservation-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reservation-service
+  template:
+    metadata:
+      labels:
+        app: reservation-service
+    spec:
+      containers:
+        - name: reservation
+          image: wassimabderrazak/reservation-service:latest
+          ports:
+            - containerPort: 5002
+          env:
+            - name: JWT_SECRET
+              value: devopssecretkey
+            - name: PG_USER
+              value: devops
+            - name: PG_PASSWORD
+              value: devops
+            - name: PG_DB
+              value: reservation_db
+            - name: PG_HOST
+              value: postgres-service
+            - name: PG_PORT
+              value: "5433"

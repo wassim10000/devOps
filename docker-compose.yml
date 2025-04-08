@@ -1,0 +1,111 @@
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - user-service
+      - salle-service
+      - reservation-service
+    environment:
+      - PORT=8000
+      - USER_SERVICE_URL=http://user-service:5000
+      - SALLE_SERVICE_URL=http://salle-service:5001
+      - RESERVATION_SERVICE_URL=http://reservation-service:5002
+    networks:
+      - devops-net
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - kafka
+    environment:
+      - PORT=5000
+      - JWT_SECRET=devopssecretkey
+      - PG_USER=devops
+      - PG_PASSWORD=devops
+      - PG_DB=userdb
+      - PG_HOST=postgres
+      - PG_PORT=5433
+      - GOOGLE_CLIENT_ID=1050598852794-b6pdt3gvgo2fcaa3jktigqvbrjfemakm.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
+    networks:
+      - devops-net
+
+
+  salle-service:
+    build: ./salle-service
+    ports:
+      - "5001:5001"
+    depends_on:
+      - postgres
+    environment:
+      - PORT=5001
+      - PG_USER=devops
+      - PG_PASSWORD=devops
+      - PG_DB=salle_db
+      - PG_HOST=postgres
+      - PG_PORT=5433
+    networks:
+      - devops-net
+
+
+  reservation-service:
+    build: ./reservation-service
+    ports:
+      - "5002:5002"
+    depends_on:
+      - postgres
+    environment:
+      - PORT=5002
+      - PG_USER=devops
+      - PG_PASSWORD=devops
+      - PG_DB=reservation_db
+      - PG_HOST=postgres
+      - PG_PORT=5433
+    networks:
+      - devops-net
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: devops
+      POSTGRES_PASSWORD: devops
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+    networks:
+      - devops-net
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - devops-net
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+    depends_on:
+      - zookeeper
+    networks:
+      - devops-net
+
+networks:
+  devops-net:
+    driver: bridge
+  
+volumes:
+  postgres-data:

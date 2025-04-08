@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devops-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: devops.local
+      http:
+        paths:
+          - path: /api/users
+            pathType: Prefix
+            backend:
+              service:
+                name: user-service
+                port:
+                  number: 5000
+
+          - path: /api/salles
+            pathType: Prefix
+            backend:
+              service:
+                name: salle-service
+                port:
+                  number: 5001
+
+          - path: /api/reservations
+            pathType: Prefix
+            backend:
+              service:
+                name: reservation-service
+                port:
+                  number: 5002
