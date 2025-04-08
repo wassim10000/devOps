@@ -10,6 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: docker/setup-buildx-action@v2
+
       - uses: actions/setup-node@v3
         with:
           node-version: 20
@@ -21,7 +23,7 @@ jobs:
           npm test || echo "tests non implémentés"
 
       - name: Build Docker image
-        run: docker build -t $DOCKER_USER/user-service:latest ./user-service
+        run: docker buildx build --load -t $DOCKER_USER/user-service:latest ./user-service
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
 
@@ -52,6 +54,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: docker/setup-buildx-action@v2
+
       - uses: actions/setup-node@v3
         with:
           node-version: 20
@@ -63,7 +67,7 @@ jobs:
           npm test || echo "tests non implémentés"
 
       - name: Build Docker image
-        run: docker build -t $DOCKER_USER/salle-service:latest ./salle-service
+        run: docker buildx build --load -t $DOCKER_USER/salle-service:latest ./salle-service
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
 
@@ -94,6 +98,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: docker/setup-buildx-action@v2
+
       - uses: actions/setup-node@v3
         with:
           node-version: 20
@@ -105,7 +111,7 @@ jobs:
           npm test || echo "tests non implémentés"
 
       - name: Build Docker image
-        run: docker build -t $DOCKER_USER/reservation-service:latest ./reservation-service
+        run: docker buildx build --load -t $DOCKER_USER/reservation-service:latest ./reservation-service
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
 
