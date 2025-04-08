@@ -21,7 +21,9 @@ jobs:
           npm test || echo "tests non implémentés"
 
       - name: Build Docker image
-        run: docker build -t $DOCKER_USER/user-service:latest ./user-service
+        run: |
+          export DOCKER_BUILDKIT=0
+          docker build -t $DOCKER_USER/user-service:latest ./user-service
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
 
@@ -63,7 +65,9 @@ jobs:
           npm test || echo "tests non implémentés"
 
       - name: Build Docker image
-        run: docker build -t $DOCKER_USER/salle-service:latest ./salle-service
+        run: |
+          export DOCKER_BUILDKIT=0
+          docker build -t $DOCKER_USER/salle-service:latest ./salle-service
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
 
@@ -105,7 +109,9 @@ jobs:
           npm test || echo "tests non implémentés"
 
       - name: Build Docker image
-        run: docker build -t $DOCKER_USER/reservation-service:latest ./reservation-service
+        run: |
+          export DOCKER_BUILDKIT=0
+          docker build -t $DOCKER_USER/reservation-service:latest ./reservation-service
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
 
